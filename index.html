@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Participant Level Checker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: auto;
+      padding: 20px;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 10px;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+      color: green;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Participant Level Checker</h2>
+
+  <label>Name</label>
+  <input type="text" id="name">
+
+  <label>Age</label>
+  <input type="number" id="age">
+
+  <label>Location</label>
+  <input type="text" id="location">
+
+  <label>Cluster</label>
+  <input type="text" id="cluster">
+
+  <label>Date</label>
+  <input type="date" id="inputDate">
+
+  <label>Trainings Attended</label>
+  <input type="number" id="trainings">
+
+  <label>Confidence Rating (1 to 5)</label>
+  <input type="number" step="0.1" min="1" max="5" id="confidence">
+
+  <label>Harvest (% of Expected)</label>
+  <input type="number" step="1" min="0" max="100" id="harvest">
+
+  <button onclick="checkLevel()">Check Level</button>
+
+  <div id="result"></div>
+
+  <script>
+    // This function calculates the fiscal year based on the date input
+    function getFiscalYear(dateStr) {
+      const date = new Date(dateStr);
+      const year = date.getFullYear();
+      const month = date.getMonth(); // January is 0, July is 6
+      return (month >= 6) ? `FY ${year}-${year + 1}` : `FY ${year - 1}-${year}`;
+    }
+
+    function checkLevel() {
+      const name = document.getElementById('name').value;
+      const age = document.getElementById('age').value;
+      const location = document.getElementById('location').value;
+      const cluster = document.getElementById('cluster').value;
+      const date = document.getElementById('inputDate').value;
+      const fiscalYear = getFiscalYear(date);
+
+      const trainings = parseInt(document.getElementById('trainings').value);
+      const confidence = parseFloat(document.getElementById('confidence').value);
+      const harvest = parseFloat(document.getElementById('harvest').value);
+
+      let level = "Low";
+      if (trainings >= 3 && confidence >= 4 && harvest >= 75) {
+        level = "High";
+      } else if (trainings >= 1 && confidence >= 3 && harvest >= 50) {
+        level = "Medium";
+      }
+
+      document.getElementById('result').innerHTML =
+        `<p><strong>${name}</strong> from <strong>${location}</strong> (Cluster: ${cluster}, Age: ${age})</p>
+         <p>Date: ${date} → <strong>${fiscalYear}</strong></p>
+         <p>🎯 Current Level: <strong>${level}</strong></p>`;
+    }
+  </script>
+</body>
+</html>
