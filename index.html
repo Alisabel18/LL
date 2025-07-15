@@ -52,13 +52,30 @@
 </div>
 
 <!-- LOGIN PAGE -->
-<div id="loginPage">...</div>
+<div id="loginPage">
+  <h2>Login</h2>
+  <input type="text" id="loginUser" placeholder="Username">
+  <input type="password" id="loginPass" placeholder="Password">
+  <button onclick="checkLogin()">Login</button>
+</div>
 
 <!-- MAIN CONTENT -->
-<div id="mainContent">...</div>
+<div id="mainContent" style="display:none;">
+  <h2>Participant Dashboard</h2>
+  <button onclick="showForm()">+ Add Participant</button>
+  <div id="participantForm" style="display:none;">
+    <!-- Your participant input form will go here -->
+  </div>
+  <div id="dashboardSection"></div>
+</div>
 
 <!-- DELETE PASSWORD MODAL -->
-<div id="passwordModal">...</div>
+<div id="passwordModal" style="display:none;">
+  <h3>Enter Admin Password to Delete</h3>
+  <input type="password" id="deletePassword">
+  <button onclick="confirmPassword()">Confirm</button>
+  <button onclick="closePasswordModal()">Cancel</button>
+</div>
 
 <script>
   let participants = [];
@@ -73,7 +90,7 @@
 
   function logout() {
     document.getElementById("mainContent").style.display = "none";
-    document.getElementById("loginPage").style.display = "flex";
+    document.getElementById("loginPage").style.display = "block";
   }
 
   function changePassword() {
@@ -89,14 +106,6 @@
     }
   }
 
-  document.getElementById("birthdate").addEventListener("change", function() {
-    const bday = new Date(this.value);
-    const ageDif = Date.now() - bday.getTime();
-    const ageDate = new Date(ageDif);
-    const age = Math.abs(ageDate.getUTCFullYear() - 1970);
-    document.getElementById("age").value = age;
-  });
-
   function checkLogin() {
     const username = document.getElementById("loginUser").value;
     const password = document.getElementById("loginPass").value;
@@ -108,14 +117,28 @@
     }
   }
 
-  function showForm() { ... }
-  function submitParticipant(event) { ... }
-  function displayParticipants() { ... }
-  function showDashboard(p) { ... }
-  function updateParticipant(id) { ... }
-  function openPasswordModal(id) { ... }
-  function closePasswordModal() { ... }
-  function confirmPassword() { ... }
+  function showForm() {
+    document.getElementById("participantForm").style.display = "block";
+  }
+
+  function closePasswordModal() {
+    deletePendingId = null;
+    document.getElementById("passwordModal").style.display = "none";
+  }
+
+  function confirmPassword() {
+    const inputPass = document.getElementById("deletePassword").value;
+    if (inputPass === currentPassword) {
+      if (confirm("Are you sure you want to delete this participant?")) {
+        participants = participants.filter(p => p.id !== deletePendingId);
+        document.getElementById("dashboardSection").innerHTML = "";
+        closePasswordModal();
+        alert("Participant deleted.");
+      }
+    } else {
+      alert("Incorrect admin password.");
+    }
+  }
 </script>
 </body>
 </html>
