@@ -6,43 +6,10 @@
   <style>
     body {
       font-family: 'Poppins', sans-serif;
-      background: #e6f7f9;
-      margin: 0;
-      padding: 0;
-    }
-    #loginPage {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      background: linear-gradient(to bottom right, #b2f7ef, #86c5f4);
-      color: #333;
-    }
-    #loginPage h2 {
-      font-size: 28px;
-      margin-bottom: 20px;
-    }
-    #loginPage input {
-      padding: 10px;
-      margin: 10px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      width: 250px;
-      font-size: 16px;
-    }
-    #loginPage button {
-      background-color: #2d89ef;
-      color: white;
-      border: none;
-      padding: 12px 20px;
-      border-radius: 8px;
-      font-size: 16px;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-    #loginPage button:hover {
-      background-color: #1c6cd9;
+      background: #f4fdfc;
+      padding: 20px;
+      max-width: 1200px;
+      margin: auto;
     }
     #menuIcon {
       position: absolute;
@@ -73,6 +40,71 @@
     #menuDropdown button:hover {
       background-color: #f0f0f0;
     }
+    input, select, button {
+      font-family: 'Poppins', sans-serif;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #2d89ef;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #1b6ec2;
+    }
+    #loginPage {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+    }
+    #loginPage input {
+      margin: 5px;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      width: 250px;
+    }
+    #mainContent h2 {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    #searchInput {
+      padding: 10px;
+      width: 400px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    #participantForm {
+      background: #ffffff;
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    #participantForm input, #participantForm select {
+      padding: 10px;
+      margin: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    .add-button {
+      background-color: #2d89ef;
+      color: white;
+      padding: 10px 20px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+    }
+    .add-button:hover {
+      background-color: #1b6ec2;
+    }
   </style>
 </head>
 <body>
@@ -86,18 +118,21 @@
 
 <!-- LOGIN PAGE -->
 <div id="loginPage">
-  <h2>Welcome Admin</h2>
+  <h2>Login</h2>
   <input type="text" id="loginUser" placeholder="Username">
   <input type="password" id="loginPass" placeholder="Password">
   <button onclick="checkLogin()">Login</button>
 </div>
 
 <!-- MAIN CONTENT -->
-<div id="mainContent" style="display:none; padding: 20px;">
-  <h2>Participant Dashboard</h2>
-  <button onclick="showForm()">+ Add Participant</button>
+<div id="mainContent" style="display:none;">
+  <h2>
+    Participant Dashboard
+    <input type="text" id="searchInput" placeholder="Search by name or cluster">
+  </h2>
+  <button class="add-button" onclick="showForm()">+ Add Participant</button>
   <div id="participantForm" style="display:none;">
-    <!-- Your participant input form will go here -->
+    <!-- Participant input form will be dynamically rendered -->
   </div>
   <div id="dashboardSection"></div>
 </div>
@@ -123,7 +158,7 @@
 
   function logout() {
     document.getElementById("mainContent").style.display = "none";
-    document.getElementById("loginPage").style.display = "flex";
+    document.getElementById("loginPage").style.display = "block";
   }
 
   function changePassword() {
@@ -152,6 +187,31 @@
 
   function showForm() {
     document.getElementById("participantForm").style.display = "block";
+    document.getElementById("participantForm").innerHTML = `
+      <h3>Add Participant</h3>
+      <input type="text" placeholder="Surname">
+      <input type="text" placeholder="First Name">
+      <input type="text" placeholder="Middle Initial">
+      <input type="text" placeholder="Extension (e.g., Jr.)">
+      <br>
+      <select><option>Gender</option><option>Male</option><option>Female</option></select>
+      <input type="date">
+      <input type="number" placeholder="Age" readonly>
+      <select><option>Civil Status</option><option>Single</option><option>Married</option></select>
+      <select><option>Cluster</option><option>Luzon</option><option>Visayas</option><option>Mindanao</option></select>
+      <select><option>Location</option><option>Quezon</option><option>Cebu</option><option>Davao</option></select>
+      <h4>Confidence Questions (1-5)</h4>
+      <input type="number" min="1" max="5" placeholder="Q1">
+      <input type="number" min="1" max="5" placeholder="Q2">
+      <input type="number" min="1" max="5" placeholder="Q3">
+      <input type="number" min="1" max="5" placeholder="Q4">
+      <input type="number" min="1" max="5" placeholder="Q5">
+      <h4>Harvest Details (kg)</h4>
+      <input type="number" placeholder="Expected Harvest" min="0" max="1000">
+      <input type="number" placeholder="Actual Harvest" min="0" max="1000">
+      <br>
+      <button type="submit">Submit</button>
+    `;
   }
 
   function closePasswordModal() {
