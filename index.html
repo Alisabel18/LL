@@ -17,18 +17,16 @@
       right: 20px;
       font-size: 24px;
       cursor: pointer;
-      color: #2d89ef;
     }
     #menuDropdown {
       display: none;
       position: absolute;
       top: 50px;
       right: 20px;
-      background: #ffffff;
+      background: #2d89ef;
       border: 1px solid #ccc;
       border-radius: 5px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      z-index: 10;
     }
     #menuDropdown button {
       display: block;
@@ -38,9 +36,10 @@
       padding: 10px;
       text-align: left;
       cursor: pointer;
+      color: white;
     }
     #menuDropdown button:hover {
-      background-color: #f0f0f0;
+      background-color: #1b6ec2;
     }
     input, select, button {
       font-family: 'Poppins', sans-serif;
@@ -107,6 +106,12 @@
     .add-button:hover {
       background-color: #1b6ec2;
     }
+    .participant-item {
+      background: #d9f0ff;
+      border-radius: 5px;
+      padding: 10px;
+      margin: 5px 0;
+    }
   </style>
 </head>
 <body>
@@ -130,11 +135,14 @@
 <div id="mainContent" style="display:none;">
   <h2>
     Participant Dashboard
-    <input type="text" id="searchInput" placeholder="Search by name or cluster">
+    <div>
+      <input type="text" id="searchInput" placeholder="Search by name or cluster">
+      <button onclick="searchParticipants()">Search</button>
+    </div>
   </h2>
   <button class="add-button" onclick="showForm()">+ Add Participant</button>
   <div id="participantForm" style="display:none;"></div>
-  <div id="dashboardSection"></div>
+  <div id="participantsList"></div>
 </div>
 
 <!-- DELETE PASSWORD MODAL -->
@@ -186,46 +194,75 @@
   }
 
   function showForm() {
-    document.getElementById("participantForm").style.display = "block";
-    document.getElementById("participantForm").innerHTML = `
+    const form = document.getElementById("participantForm");
+    form.style.display = "block";
+    form.innerHTML = `
       <h3>Add Participant</h3>
-      <input type="text" placeholder="Surname">
-      <input type="text" placeholder="First Name">
-      <input type="text" placeholder="Middle Initial">
-      <input type="text" placeholder="Extension (e.g., Jr.)">
+      <input type="text" id="surname" placeholder="Surname" required>
+      <input type="text" id="firstname" placeholder="First Name" required>
+      <input type="text" id="mi" placeholder="Middle Initial">
+      <input type="text" id="extension" placeholder="Extension">
       <br>
-      <select><option>Gender</option><option>Male</option><option>Female</option></select>
+      <select id="gender"><option>Gender</option><option>Male</option><option>Female</option></select>
       <input type="date" id="birthdate">
-      <input type="number" placeholder="Age" id="age" readonly>
-      <select><option>Civil Status</option><option>Single</option><option>Married</option></select>
-      <select><option>Cluster</option><option>Luzon</option><option>Visayas</option><option>Mindanao</option></select>
-      <select><option>Location</option><option>Quezon</option><option>Cebu</option><option>Davao</option></select>
+      <input type="number" id="age" placeholder="Age" readonly>
+      <select id="status"><option>Civil Status</option><option>Single</option><option>Married</option></select>
+      <select id="cluster"><option>Cluster</option><option>Luzon</option><option>Visayas</option><option>Mindanao</option></select>
+      <select id="location"><option>Location</option><option>Quezon</option><option>Cebu</option><option>Davao</option></select>
       <h4>Confidence Questions (1-5)</h4>
-      <input type="number" min="1" max="5" placeholder="Q1">
-      <input type="number" min="1" max="5" placeholder="Q2">
-      <input type="number" min="1" max="5" placeholder="Q3">
-      <input type="number" min="1" max="5" placeholder="Q4">
-      <input type="number" min="1" max="5" placeholder="Q5">
+      <input type="number" id="q1" min="1" max="5" placeholder="Q1">
+      <input type="number" id="q2" min="1" max="5" placeholder="Q2">
+      <input type="number" id="q3" min="1" max="5" placeholder="Q3">
+      <input type="number" id="q4" min="1" max="5" placeholder="Q4">
+      <input type="number" id="q5" min="1" max="5" placeholder="Q5">
       <h4>Harvest Details (kg)</h4>
-      <input type="number" placeholder="Expected Harvest" min="0" max="1000">
-      <input type="number" placeholder="Actual Harvest" min="0" max="1000">
+      <input type="number" id="expected" placeholder="Expected Harvest" min="0" max="1000">
+      <input type="number" id="actual" placeholder="Actual Harvest" min="0" max="1000">
       <br>
-      <button type="submit">Submit</button>
+      <button onclick="submitParticipant()">Submit</button>
     `;
 
-    const birthdateInput = document.getElementById("birthdate");
-    const ageInput = document.getElementById("age");
-
-    birthdateInput.addEventListener("change", function () {
-      const birthDate = new Date(birthdateInput.value);
-      const today = new Date();
-      let age = today.getFullYear() - birthDate.getFullYear();
-      const m = today.getMonth() - birthDate.getMonth();
-      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-        age--;
-      }
-      ageInput.value = age;
+    document.getElementById("birthdate").addEventListener("change", function() {
+      const bday = new Date(this.value);
+      const ageDif = Date.now() - bday.getTime();
+      const ageDate = new Date(ageDif);
+      const age = Math.abs(ageDate.getUTCFullYear() - 1970);
+      document.getElementById("age").value = age;
     });
+  }
+
+  function submitParticipant() {
+    if (participants.length >= 2000) {
+      alert("Maximum of 2000 participants reached.");
+      return;
+    }
+    const name = `${document.getElementById("surname").value} ${document.getElementById("firstname").value}`;
+    const participant = {
+      id: Date.now(),
+      name,
+      gender: document.getElementById("gender").value,
+      birthdate: document.getElementById("birthdate").value,
+      age: document.getElementById("age").value,
+      status: document.getElementById("status").value,
+      cluster: document.getElementById("cluster").value,
+      location: document.getElementById("location").value
+    };
+    participants.push(participant);
+    document.getElementById("participantForm").reset();
+    document.getElementById("participantForm").style.display = "none";
+    showParticipants();
+  }
+
+  function showParticipants() {
+    const list = document.getElementById("participantsList");
+    list.innerHTML = participants.map(p => `<div class='participant-item'>${p.name} - ${p.cluster}</div>`).join("");
+  }
+
+  function searchParticipants() {
+    const query = document.getElementById("searchInput").value.toLowerCase();
+    const list = document.getElementById("participantsList");
+    const filtered = participants.filter(p => p.name.toLowerCase().includes(query) || p.cluster.toLowerCase().includes(query));
+    list.innerHTML = filtered.map(p => `<div class='participant-item'>${p.name} - ${p.cluster}</div>`).join("");
   }
 
   function closePasswordModal() {
