@@ -17,16 +17,18 @@
       right: 20px;
       font-size: 24px;
       cursor: pointer;
+      color: #2d89ef;
     }
     #menuDropdown {
       display: none;
       position: absolute;
       top: 50px;
       right: 20px;
-      background: white;
+      background: #ffffff;
       border: 1px solid #ccc;
       border-radius: 5px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      z-index: 10;
     }
     #menuDropdown button {
       display: block;
@@ -131,9 +133,7 @@
     <input type="text" id="searchInput" placeholder="Search by name or cluster">
   </h2>
   <button class="add-button" onclick="showForm()">+ Add Participant</button>
-  <div id="participantForm" style="display:none;">
-    <!-- Participant input form will be dynamically rendered -->
-  </div>
+  <div id="participantForm" style="display:none;"></div>
   <div id="dashboardSection"></div>
 </div>
 
@@ -195,8 +195,8 @@
       <input type="text" placeholder="Extension (e.g., Jr.)">
       <br>
       <select><option>Gender</option><option>Male</option><option>Female</option></select>
-      <input type="date">
-      <input type="number" placeholder="Age" readonly>
+      <input type="date" id="birthdate">
+      <input type="number" placeholder="Age" id="age" readonly>
       <select><option>Civil Status</option><option>Single</option><option>Married</option></select>
       <select><option>Cluster</option><option>Luzon</option><option>Visayas</option><option>Mindanao</option></select>
       <select><option>Location</option><option>Quezon</option><option>Cebu</option><option>Davao</option></select>
@@ -212,6 +212,20 @@
       <br>
       <button type="submit">Submit</button>
     `;
+
+    const birthdateInput = document.getElementById("birthdate");
+    const ageInput = document.getElementById("age");
+
+    birthdateInput.addEventListener("change", function () {
+      const birthDate = new Date(birthdateInput.value);
+      const today = new Date();
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const m = today.getMonth() - birthDate.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+      ageInput.value = age;
+    });
   }
 
   function closePasswordModal() {
