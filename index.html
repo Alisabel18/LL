@@ -96,6 +96,7 @@
 </head>
 <body>
 
+<!-- LOGIN PAGE -->
 <div id="loginPage">
   <h2>Admin Login</h2>
   <input type="text" id="loginUser" placeholder="Username" class="medium">
@@ -103,6 +104,7 @@
   <button onclick="checkLogin()">Login</button>
 </div>
 
+<!-- MAIN CONTENT -->
 <div id="mainContent">
   <h2>Participant Dashboard</h2>
   <input type="text" id="searchInput" placeholder="Search by name or cluster">
@@ -154,6 +156,9 @@
     <input type="number" id="q3" min="1" max="5" required placeholder="Q3">
     <input type="number" id="q4" min="1" max="5" required placeholder="Q4">
     <input type="number" id="q5" min="1" max="5" required placeholder="Q5">
+    <h4>Harvest Details (kg)</h4>
+    <input type="number" id="expected" placeholder="Expected Harvest" min="0" max="1000" required>
+    <input type="number" id="actual" placeholder="Actual Harvest" min="0" max="1000" required>
     <button type="submit">Submit</button>
   </form>
 
@@ -161,6 +166,7 @@
   <div id="dashboardSection" class="card"></div>
 </div>
 
+<!-- DELETE PASSWORD MODAL -->
 <div id="passwordModal">
   <div id="passwordModalContent">
     <p>Enter admin password to delete:</p>
@@ -205,6 +211,8 @@
     const cluster = document.getElementById("cluster").value.trim();
     const gender = document.getElementById("gender").value.trim();
     const status = document.getElementById("status").value.trim();
+    const expected = parseInt(document.getElementById("expected").value);
+    const actual = parseInt(document.getElementById("actual").value);
     const scores = [1,2,3,4,5].map(i => parseInt(document.getElementById(`q${i}`).value));
 
     const isDuplicate = participants.some(p => p.name === name && p.birthdate === birthdate && p.location === location);
@@ -214,7 +222,7 @@
     }
 
     const participant = {
-      id: Date.now(), name, birthdate, location, cluster, gender, status, scores
+      id: Date.now(), name, birthdate, location, cluster, gender, status, scores, expected, actual
     };
     participants.push(participant);
     document.getElementById("participantForm").reset();
@@ -239,13 +247,28 @@
 
   function showDashboard(p) {
     const avg = (p.scores.reduce((a,b) => a + b, 0) / p.scores.length).toFixed(1);
-    const color = avg >= 4 ? '#4caf50' : avg >= 3 ? '#ffc107' : '#f44336';
+    const confidenceColor = avg >= 4 ? '#4caf50' : avg >= 3 ? '#ffc107' : '#f44336';
+
+    let harvestPercent = p.expected > 0 ? Math.round((p.actual / p.expected) * 100) : 0;
+    let harvestColor = harvestPercent >= 75 ? '#4caf50' : harvestPercent >= 40 ? '#ffc107' : '#f44336';
+
     document.getElementById("dashboardSection").innerHTML = `
       <h3>${p.name}</h3>
       <p><strong>Cluster:</strong> ${p.cluster}</p>
       <p><strong>Location:</strong> ${p.location}</p>
-      <div class="progress-circle" style="--percent: ${avg*20}; --color: ${color};">
-        ${avg}
+      <div style="display:flex; justify-content:space-around;">
+        <div>
+          <p>Confidence</p>
+          <div class="progress-circle" style="--percent: ${avg*20}; --color: ${confidenceColor};">
+            ${avg}
+          </div>
+        </div>
+        <div>
+          <p>Harvest %</p>
+          <div class="progress-circle" style="--percent: ${harvestPercent}; --color: ${harvestColor};">
+            ${harvestPercent}%
+          </div>
+        </div>
       </div>
     `;
     document.getElementById("dashboardSection").style.display = "block";
