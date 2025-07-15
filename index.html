@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -22,6 +21,7 @@
     input.small, select.small { width: 100px; }
     input.medium, select.medium { width: 200px; }
     input.full, select.full { width: 100%; }
+    input#searchInput { width: 400px; }
     button {
       padding: 10px 15px;
       margin: 10px 0;
@@ -51,57 +51,58 @@
   </style>
 </head>
 <body>
-<div id="loginPage">
-  <h2>Admin Login</h2>
-  <label>Username</label>
-  <input type="text" id="loginUser" class="medium">
-  <label>Password</label>
-  <input type="password" id="loginPass" class="medium">
-  <button onclick="checkLogin()">Login</button>
-</div>
-
-<div id="mainContent">
-  <h2>Participant Dashboard</h2>
-  <input type="text" id="searchInput" placeholder="Search by name or cluster..." oninput="filterParticipants()">
-  <button onclick="filterParticipants()">Search</button>
-  <div class="card">
-    <h3>Add Participant</h3>
-    <div class="form-row">
-      <div class="form-group"><label>Surname</label><input type="text" id="surname"></div>
-      <div class="form-group"><label>First Name</label><input type="text" id="firstname"></div>
-      <div class="form-group"><label>Middle Initial</label><input type="text" id="mi"></div>
-      <div class="form-group"><label>Extension</label><input type="text" id="extension"></div>
-    </div>
-    <div class="form-row">
-      <div class="form-group"><label>Gender</label><select id="gender"><option value="">Select</option><option>Male</option><option>Female</option></select></div>
-      <div class="form-group"><label>Birthdate</label><input type="date" id="birthdate" onchange="calculateAge()"></div>
-      <div class="form-group"><label>Age</label><input type="number" id="age" readonly></div>
-      <div class="form-group"><label>Civil Status</label><select id="civilStatus"><option value="">Select</option><option>Single</option><option>Married</option></select></div>
-    </div>
-    <div class="form-row">
-      <div class="form-group"><label>Cluster</label><select id="cluster"><option value="">Select</option><option>Luzon</option><option>Visayas</option><option>Mindanao</option></select></div>
-      <div class="form-group"><label>Location</label><select id="location"><option value="">Select</option><option>QC</option><option>Cebu</option><option>Davao</option></select></div>
-    </div>
-    <div class="form-row">
-      <div class="form-group"><label>Confidence Q1</label><select id="q1"><option></option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
-      <div class="form-group"><label>Confidence Q2</label><select id="q2"><option></option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
-      <div class="form-group"><label>Confidence Q3</label><select id="q3"><option></option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
-      <div class="form-group"><label>Confidence Q4</label><select id="q4"><option></option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
-      <div class="form-group"><label>Confidence Q5</label><select id="q5"><option></option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
-    </div>
-    <button onclick="addParticipant()">Add Participant</button>
+  <div id="loginPage">
+    <h2>Admin Login</h2>
+    <label>Username</label>
+    <input type="text" id="loginUser" class="medium">
+    <label>Password</label>
+    <input type="password" id="loginPass" class="medium">
+    <button onclick="checkLogin()">Login</button>
   </div>
 
-  <div class="card" id="participantList">
-    <h3>Participants</h3>
-    <div id="participants"></div>
-  </div>
+  <div id="mainContent">
+    <h2>Participant Dashboard</h2>
+    <input type="text" id="searchInput" placeholder="Search by name or cluster..." oninput="filterParticipants()">
+    <button onclick="filterParticipants()">Search</button>
 
-  <div class="card" id="dashboardSection">
-    <h3>Participant Confidence Dashboard</h3>
-    <div id="confidenceOutput"></div>
+    <div class="card">
+      <h3>Add Participant</h3>
+      <div class="form-row">
+        <div class="form-group"><label>Surname</label><input type="text" id="surname"></div>
+        <div class="form-group"><label>First Name</label><input type="text" id="firstname"></div>
+        <div class="form-group"><label>Middle Initial</label><input type="text" id="mi"></div>
+        <div class="form-group"><label>Extension</label><input type="text" id="extension"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Gender</label><select id="gender"><option value="">Select</option><option>Male</option><option>Female</option></select></div>
+        <div class="form-group"><label>Birthdate</label><input type="date" id="birthdate" onchange="calculateAge()"></div>
+        <div class="form-group"><label>Age</label><input type="number" id="age" readonly></div>
+        <div class="form-group"><label>Civil Status</label><select id="civilStatus"><option value="">Select</option><option>Single</option><option>Married</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Cluster</label><select id="cluster"><option value="">Select</option><option>Luzon</option><option>Visayas</option><option>Mindanao</option></select></div>
+        <div class="form-group"><label>Location</label><select id="location"><option value="">Select</option><option>QC</option><option>Cebu</option><option>Davao</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Confidence Q1</label><select id="q1"><option></option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
+        <div class="form-group"><label>Confidence Q2</label><select id="q2"><option></option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
+        <div class="form-group"><label>Confidence Q3</label><select id="q3"><option></option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
+        <div class="form-group"><label>Confidence Q4</label><select id="q4"><option></option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
+        <div class="form-group"><label>Confidence Q5</label><select id="q5"><option></option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
+      </div>
+      <button onclick="addParticipant()">Add Participant</button>
+    </div>
+
+    <div class="card" id="participantList">
+      <h3>Participants</h3>
+      <div id="participants"></div>
+    </div>
+
+    <div class="card" id="dashboardSection">
+      <h3>Participant Confidence Dashboard</h3>
+      <div id="confidenceOutput"></div>
+    </div>
   </div>
-</div>
 
 <script>
   let participants = [];
@@ -124,16 +125,33 @@
   function addParticipant() {
     if (participants.length >= 2000) return alert("Limit reached");
 
+    const fname = document.getElementById("firstname").value.trim();
+    const sname = document.getElementById("surname").value.trim();
+    const birthdate = document.getElementById("birthdate").value.trim();
+    const location = document.getElementById("location").value.trim();
+    const fullName = `${sname}, ${fname}`;
+
+    if (!fname || !sname || !birthdate || !location) {
+      alert("First Name, Surname, Birthdate, and Location are required!");
+      return;
+    }
+
+    const isDuplicate = participants.some(p => p.name === fullName && p.birthdate === birthdate && p.location === location);
+    if (isDuplicate) {
+      alert("Duplicate participant found. Entry will not be added.");
+      return;
+    }
+
     const participant = {
-      name: `${document.getElementById("surname").value}, ${document.getElementById("firstname").value}`,
+      name: fullName,
       mi: document.getElementById("mi").value,
       ext: document.getElementById("extension").value,
       gender: document.getElementById("gender").value,
-      birthdate: document.getElementById("birthdate").value,
+      birthdate,
       age: document.getElementById("age").value,
       status: document.getElementById("civilStatus").value,
       cluster: document.getElementById("cluster").value,
-      location: document.getElementById("location").value,
+      location,
       scores: ["q1", "q2", "q3", "q4", "q5"].map(id => parseInt(document.getElementById(id).value || 0))
     };
     participants.push(participant);
